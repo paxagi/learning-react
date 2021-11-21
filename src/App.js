@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import PostItem from './components/PostItem'
+import MyButton from './components/UI/button/MyButton';
 import PostList from './components/PostList';
 import './styles/App.css'
 
@@ -11,7 +11,12 @@ function App() {
   ])
   
   return (
-    <div className = "App">
+    <div className="App">
+      <form>
+        <input type="text" placeholder="post title" />
+        <input type="text" placeholder="post description" />
+        <MyButton disabled>Make post</MyButton>
+      </form>
       <PostList posts = {posts} title = 'List of Posts' />
     </div>
   );
