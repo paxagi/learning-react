@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react';
 import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
-import MyInput from './components/UI/input/MyInput';
-import MySelect from './components/UI/select/MySelect';
+import MyButton from './components/UI/button/MyButton';
+import MyModal from './components/UI/modal/MyModal';
 import './styles/App.css';
 
 function App() {
@@ -16,10 +16,7 @@ function App() {
 
   // HOOK STATEMENTS
   const [filter, setFilter] = useState({sort: '', query:''})
-
-  function getSortedPost() {
-    
-  }
+  const [modal, setModal] = useState(false)
 
   const sortedPosts = useMemo(() => { 
     console.log('getSortedPost is worked')
@@ -35,6 +32,7 @@ function App() {
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
+    setModal(false)
   }
   const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id))
@@ -43,9 +41,19 @@ function App() {
     
   return (
     <div className="App">
-      <PostForm
-        create = {createPost}
-      />
+      <MyButton
+        onClick = {() => setModal(true)}
+      >
+        Create User
+      </MyButton>
+      <MyModal
+        visible = {modal}
+        setVisible={setModal}
+      >
+        <PostForm
+          create = {createPost}
+        />
+      </MyModal>
       <hr />
       <PostFilter
         filter = {filter}
