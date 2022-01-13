@@ -4,6 +4,7 @@ import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
 import MyButton from './components/UI/button/MyButton';
+import Loader from './components/UI/Loader/Loader';
 import MyModal from './components/UI/modal/MyModal';
 import { usePosts } from './hooks/usePosts';
 import './styles/App.css';
@@ -71,7 +72,15 @@ function App() {
       {
         isPostLoading
         ?
-          <h1>loading...</h1>
+          <div
+            style = {{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '50px',
+            }}
+          >
+            <Loader />
+          </div>
         :
           <PostList
             posts = {sortedAndSearchedPosts}
