@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import PostService from './API/PostService';
 import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
@@ -7,24 +8,36 @@ import MyModal from './components/UI/modal/MyModal';
 import { usePosts } from './hooks/usePosts';
 import './styles/App.css';
 
+
 function App() {
   // FOR EXAMPLE
-  const [posts, setPosts] = useState([
-    {id: 1, title: 'JS', body: 'Description 1'},
-    {id: 2, title: 'JS', body: 'Description 2'},
-    {id: 3, title: 'JS', body: 'Description 3'},
-  ])
+  const [posts, setPosts] = useState([])
 
   // HOOK STATEMENTS
   const [filter, setFilter] = useState({sort: '', query:''})
   const [modal, setModal] = useState(false)
+  const [isPostLoading, setIsPostLoading] = useState(true)
   // CUSTOM HOOK STATEMENTS
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
+
+  useEffect(() => {
+    fetchPosts();
+  }, [])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
     setModal(false)
   }
+
+  async function fetchPosts() {
+    setIsPostLoading(true)
+    setTimeout(async () => {
+      const posts = await PostService.getAll()
+      setPosts(posts)
+      setIsPostLoading(false)
+    }, 1000)
+  }
+
   const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id))
   }
@@ -32,6 +45,11 @@ function App() {
     
   return (
     <div className="App">
+      <MyButton
+        onClick = {fetchPosts}
+      >
+        get posts
+      </MyButton>
       <MyButton
         onClick = {() => setModal(true)}
       >
@@ -50,11 +68,18 @@ function App() {
         filter = {filter}
         setFilter = {setFilter}
       />
-      <PostList
-        posts = {sortedAndSearchedPosts}
-        title = 'List of Posts'
-        remove = {removePost}
-      />
+      {
+        isPostLoading
+        ?
+          <h1>loading...</h1>
+        :
+          <PostList
+            posts = {sortedAndSearchedPosts}
+            title = 'List of Posts'
+            remove = {removePost}
+          />
+        
+      }
     </div>
   );
 }
